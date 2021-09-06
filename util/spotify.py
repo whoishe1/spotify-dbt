@@ -1,15 +1,18 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import pandas as pd
-from datetime import datetime
 from typing import List, Dict, Tuple
-import os
 
 # use the following scopes to access data in the categories ->
 # user-read-recently-played, user-top-read
 # Methods used in spotify, current_user_recently_played, audio_features, artists
 
-# when you use the scopes in the spotify, it will filter what to look at (played recently, users top artists, users top tracks).  After that you use the spotipy methods to obtain that data in that category.
+# when you use the scopes in the spotify,
+# it will filter what to look at
+# (played recently, # users top artists, users top tracks).
+# After that you use the spotipy methods to obtain #that data in that category.
+
+
 class SpotifyTracks:
     """
     Using Spotipy to access Spotify API
@@ -62,15 +65,14 @@ class SpotifyTracks:
 
         return primary, others
 
-    def spread_columns(
-        self, df: pd.core.frame.DataFrame, col: str
-    ) -> pd.core.frame.DataFrame:
+    def spread_columns(self, df: pd.core.frame.DataFrame, col: str) -> pd.core.frame.DataFrame:
         """
         spread columns for atomicity
         """
 
         cols = df[col].str.split(",", expand=True)
         num_of_cols = len(cols.columns)
+
         output = [str(f"{col}_{i}") for i in range(num_of_cols)]
 
         df[output] = df[col].str.split(",", expand=True)
@@ -112,9 +114,7 @@ class SpotifyTracks:
 
         results_method = results.get("items")
         results_method = pd.json_normalize(results_method).reset_index()
-        results_method = results_method[trackfeatures.keys()].rename(
-            columns=trackfeatures
-        )
+        results_method = results_method[trackfeatures.keys()].rename(columns=trackfeatures)
 
         results_method["track_duration_min"] = round(
             (results_method["track_duration_min"] / 60000), 2
@@ -135,9 +135,7 @@ class SpotifyTracks:
         ) = zip(*results_method["artists"].apply(self.parse_artist))
 
         # audio features
-        results_audio_features = sp.audio_features(
-            tracks=results_method["track_id"].tolist()
-        )
+        results_audio_features = sp.audio_features(tracks=results_method["track_id"].tolist())
 
         audiofeatures = {
             "danceability": "track_danceability",
@@ -159,9 +157,7 @@ class SpotifyTracks:
         audio = audio.drop_duplicates(subset="track_id").reset_index(drop=True)
 
         # artist info
-        results_artists = sp.artists(
-            artists=results_method["primary_artist_id"].tolist()
-        )
+        results_artists = sp.artists(artists=results_method["primary_artist_id"].tolist())
         artists = pd.json_normalize(results_artists["artists"])
 
         artists_info = {
@@ -176,9 +172,7 @@ class SpotifyTracks:
             *artists["genres"].apply(self.parse_primary_other)
         )
 
-        artists = artists.drop_duplicates(subset="primary_artist_id").reset_index(
-            drop=True
-        )
+        artists = artists.drop_duplicates(subset="primary_artist_id").reset_index(drop=True)
 
         df = pd.merge(results_method, audio, how="left", on="track_id").merge(
             artists, how="left", on="primary_artist_id"
