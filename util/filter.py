@@ -2,7 +2,7 @@ import pandas as pd
 from datetime import datetime
 
 
-def transform():
+def edit_columns():
     date = datetime.now().strftime("%Y-%m-%d")
 
     rp = pd.read_csv("./data/recentlyplayed.csv")

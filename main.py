@@ -1,6 +1,6 @@
 from util.spotify import SpotifyTracks
 from util.alltracks import ReturnPlaylist
-from util.transform import transform
+from util.filter import edit_columns
 from util.load import Load
 import os
 from dotenv import dotenv_values
@@ -23,11 +23,11 @@ def get_spotify():
     recently_played = spotify_obj.rec_played_or_top_tracks("user-read-recently-played")
     top_tracks = spotify_obj.rec_played_or_top_tracks("user-top-read")
 
-    top_artists.to_csv(os.path.join("./data", "top_artists.csv"), index=False, encoding="utf-8")
+    top_artists.to_csv(os.path.join("./extract", "top_artists.csv"), index=False, encoding="utf-8")
     recently_played.to_csv(
-        os.path.join("./data", "recentlyplayed.csv"), index=False, encoding="utf-8"
+        os.path.join("./extract", "recentlyplayed.csv"), index=False, encoding="utf-8"
     )
-    top_tracks.to_csv(os.path.join("./data", "top_tracks.csv"), index=False, encoding="utf-8")
+    top_tracks.to_csv(os.path.join("./extract", "top_tracks.csv"), index=False, encoding="utf-8")
 
 
 def get_alltracks():
@@ -50,7 +50,7 @@ def get_alltracks():
     all_df = pd.concat(output).reset_index(drop=True)
 
     all_df.to_csv(
-        os.path.join("./data/all", f"spotify_playlist_{date}.csv"),
+        os.path.join("./extract/all", f"spotify_playlist_{date}.csv"),
         index=False,
         encoding="utf-8",
     )
@@ -68,5 +68,5 @@ def load_data():
 if __name__ == "__main__":
     get_spotify()
     get_alltracks()
-    transform()
+    edit_columns()
     load_data()

@@ -33,10 +33,10 @@ class Load:
                 ALBUM_RELEASE_YEAR DATE, PRIMARY_GENRE VARCHAR(255), TRACK_DANCEABILITY NUMERIC,
                 TRACK_ENERGY NUMERIC, TRACK_KEY INT, TRACK_LOUDNESS NUMERIC, TRACK_MODE INT, TRACK_SPEECHINESS NUMERIC,
                 TRACK_ACOUSTICNESS NUMERIC, TRACK_INSTRUMENTALNESS NUMERIC, TRACK_LIVENESS NUMERIC, TRACK_VALENCE NUMERIC,
-                TRACK_TEMPO NUMERIC, POPULARITY INT, FOLLOWERS BIGINT);"""
+                TRACK_TEMPO NUMERIC, POPULARITY INT, FOLLOWERS BIGINT,_ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);"""
             )
 
-            lf = max(pathlib.Path("./data/rp").glob("*"), key=os.path.getmtime)
+            lf = max(pathlib.Path("./extract/rp").glob("*"), key=os.path.getmtime)
             lf = str(lf)
 
             df = pd.read_csv(lf)
@@ -47,8 +47,8 @@ class Load:
                 """INSERT INTO RECENTLY_PLAYED (TRACK_PLAYED_AT,TRACK_ID,TRACK_NAME,TRACK_DURATION_MIN,TRACK_POPULARITY,
                 PRIMARY_ARTIST,PRIMARY_ARTIST_ID,ALBUM_ID,ALBUM_NAME,ALBUM_RELEASE_YEAR,PRIMARY_GENRE,TRACK_DANCEABILITY,
                 TRACK_ENERGY,TRACK_KEY,TRACK_LOUDNESS,TRACK_MODE,TRACK_SPEECHINESS,TRACK_ACOUSTICNESS,TRACK_INSTRUMENTALNESS,TRACK_LIVENESS,
-                TRACK_VALENCE,TRACK_TEMPO,POPULARITY,FOLLOWERS) VALUES
-                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
+                TRACK_VALENCE,TRACK_TEMPO,POPULARITY,FOLLOWERS,_ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP) VALUES
+                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
                 tracks,
             )
 
@@ -74,10 +74,10 @@ class Load:
             cur.execute("DROP TABLE IF EXISTS TOP_ARTISTS;")
             cur.execute(
                 """CREATE TABLE TOP_ARTISTS (ARTIST_ID VARCHAR(255), ARTIST_NAME VARCHAR(255), ARTIST_POPULARITY INT,
-                ARTIST_FOLLOWERS BIGINT, PRIMARY_GENRE VARCHAR(255));"""
+                ARTIST_FOLLOWERS BIGINT, PRIMARY_GENRE VARCHAR(255), _ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);"""
             )
 
-            lf = max(pathlib.Path("./data/ta").glob("*"), key=os.path.getmtime)
+            lf = max(pathlib.Path("./extract/ta").glob("*"), key=os.path.getmtime)
             lf = str(lf)
 
             df = pd.read_csv(lf)
@@ -85,7 +85,7 @@ class Load:
             artists = list(df.to_records(index=False))
 
             cur.executemany(
-                """INSERT INTO TOP_ARTISTS (ARTIST_ID,ARTIST_NAME,ARTIST_POPULARITY,ARTIST_FOLLOWERS,PRIMARY_GENRE) VALUES (%s,%s,%s,%s,%s);""",
+                """INSERT INTO TOP_ARTISTS (ARTIST_ID,ARTIST_NAME,ARTIST_POPULARITY,ARTIST_FOLLOWERS,PRIMARY_GENRE) VALUES (%s,%s,%s,%s,%s,%s);""",
                 artists,
             )
 
@@ -115,10 +115,10 @@ class Load:
                 ALBUM_RELEASE_YEAR DATE, PRIMARY_GENRE VARCHAR(255), TRACK_DANCEABILITY NUMERIC,
                 TRACK_ENERGY NUMERIC, TRACK_KEY INT, TRACK_LOUDNESS NUMERIC, TRACK_MODE INT, TRACK_SPEECHINESS NUMERIC,
                 TRACK_ACOUSTICNESS NUMERIC, TRACK_INSTRUMENTALNESS NUMERIC, TRACK_LIVENESS NUMERIC, TRACK_VALENCE NUMERIC,
-                TRACK_TEMPO NUMERIC, POPULARITY INT, FOLLOWERS BIGINT);"""
+                TRACK_TEMPO NUMERIC, POPULARITY INT, FOLLOWERS BIGINT, _ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);"""
             )
 
-            lf = max(pathlib.Path("./data/tt").glob("*"), key=os.path.getmtime)
+            lf = max(pathlib.Path("./extract/tt").glob("*"), key=os.path.getmtime)
             lf = str(lf)
 
             df = pd.read_csv(lf)
@@ -129,7 +129,7 @@ class Load:
                 """INSERT INTO TOP_TRACKS (TRACK_ID,TRACK_NAME,TRACK_DURATION_MIN,TRACK_POPULARITY,PRIMARY_ARTIST,PRIMARY_ARTIST_ID,
                 ALBUM_ID,ALBUM_NAME,ALBUM_RELEASE_YEAR,PRIMARY_GENRE,TRACK_DANCEABILITY,TRACK_ENERGY,TRACK_KEY,TRACK_LOUDNESS,TRACK_MODE,
                 TRACK_SPEECHINESS,TRACK_ACOUSTICNESS,TRACK_INSTRUMENTALNESS,TRACK_LIVENESS,TRACK_VALENCE,TRACK_TEMPO,POPULARITY,FOLLOWERS) VALUES
-                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
+                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
                 top_tracks,
             )
 
@@ -154,10 +154,11 @@ class Load:
             cur = conn.cursor()
             cur.execute("DROP TABLE IF EXISTS ALL_TRACKS;")
             cur.execute(
-                """CREATE TABLE ALL_TRACKS (ID VARCHAR(255), ARTISTS VARCHAR(255), TRACKNAME VARCHAR(255), ALBUM VARCHAR(255));"""
+                """CREATE TABLE ALL_TRACKS (ID VARCHAR(255), ARTISTS VARCHAR(255), TRACKNAME VARCHAR(255), ALBUM VARCHAR(255),
+                _ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);"""
             )
 
-            lf = max(pathlib.Path("./data/all").glob("*"), key=os.path.getmtime)
+            lf = max(pathlib.Path("./extract/all").glob("*"), key=os.path.getmtime)
             lf = str(lf)
 
             df = pd.read_csv(lf)
@@ -165,7 +166,7 @@ class Load:
             all_tracks = list(df.to_records(index=False))
 
             cur.executemany(
-                """INSERT INTO ALL_TRACKS (ID,ARTISTS,TRACKNAME,ALBUM) VALUES (%s,%s,%s,%s);""",
+                """INSERT INTO ALL_TRACKS (ID,ARTISTS,TRACKNAME,ALBUM) VALUES (%s,%s,%s,%s,%s);""",
                 all_tracks,
             )
 
