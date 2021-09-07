@@ -16,4 +16,5 @@ repos:
     hooks:
       - id: flake8
         stages: [commit]
+        # args: [--config=setup.cfg]
         args: [--config=setup.cfg, "--ignore=F401"]
