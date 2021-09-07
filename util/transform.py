@@ -76,6 +76,6 @@ def transform():
         ]
     ]
 
-    rp.to_csv(f"./data/info/recentlylayed_{date}.csv")
-    tt.to_csv(f"./data/info/top_tracks_{date}.csv")
-    ta.to_csv(f"./data/info/top_artists_{date}.csv")
+    rp.to_csv(f"./data/rp/recentlyplayed_{date}.csv", index=False)
+    tt.to_csv(f"./data/tt/top_tracks_{date}.csv", index=False)
+    ta.to_csv(f"./data/ta/top_artists_{date}.csv", index=False)

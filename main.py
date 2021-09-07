@@ -1,6 +1,7 @@
 from util.spotify import SpotifyTracks
 from util.alltracks import ReturnPlaylist
 from util.transform import transform
+from util.load import Load
 import os
 from dotenv import dotenv_values
 from datetime import datetime
@@ -11,6 +12,7 @@ config = dotenv_values(".env")
 
 
 def get_spotify():
+
     spotify_obj = SpotifyTracks(
         username=config["USERNAME"],
         client_id=config["CLIENT_ID"],
@@ -54,7 +56,17 @@ def get_alltracks():
     )
 
 
+def load_data():
+    load_obj = Load("localhost", "spotify", "postgres", "postgres")
+
+    load_obj.insert_rec_played()
+    load_obj.insert_all_tracks()
+    load_obj.insert_top_artists()
+    load_obj.insert_top_tracks()
+
+
 if __name__ == "__main__":
     get_spotify()
     get_alltracks()
     transform()
+    load_data()
