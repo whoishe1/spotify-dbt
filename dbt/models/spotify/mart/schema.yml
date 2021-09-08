@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: mart_specific_artists
+    description: "atu,dpat,brent,sonder,amber olivier"
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+      - name: artists
+        tests:
+          - not_null
+      - name: trackname
+          - not_null
+      - name: album
+          - not_null
+  - name: mart_most_popular_tracks
+    description: "top 50 tracks with a track popularity of > 70"
+    columns:
+      - name: track_id
+        tests:
+          - not_null
+          - unique
+      - name: track_name
+      - name: primary_artist_id
+        tests:
+          - not_null
+      - name: primary_artist
+        tests:
+          - not_null
+      - name: album_name
+      - name: track_popularity
+        description: The popularity of the track
+      - name: popularity

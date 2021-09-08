@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: spotify
+    schema: public
+    tables:
+      - name: all_tracks
+      - name: top_artists
+      - name: top_tracks
+      - name: recently_played
+
+models:
+  - name: staging_all_tracks
+  - name: staging_top_tracks
+  - name: staging_top_artists
+  - name: staging_recently_played
