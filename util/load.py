@@ -47,8 +47,8 @@ class Load:
                 """INSERT INTO RECENTLY_PLAYED (TRACK_PLAYED_AT,TRACK_ID,TRACK_NAME,TRACK_DURATION_MIN,TRACK_POPULARITY,
                 PRIMARY_ARTIST,PRIMARY_ARTIST_ID,ALBUM_ID,ALBUM_NAME,ALBUM_RELEASE_YEAR,PRIMARY_GENRE,TRACK_DANCEABILITY,
                 TRACK_ENERGY,TRACK_KEY,TRACK_LOUDNESS,TRACK_MODE,TRACK_SPEECHINESS,TRACK_ACOUSTICNESS,TRACK_INSTRUMENTALNESS,TRACK_LIVENESS,
-                TRACK_VALENCE,TRACK_TEMPO,POPULARITY,FOLLOWERS,_ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP) VALUES
-                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
+                TRACK_VALENCE,TRACK_TEMPO,POPULARITY,FOLLOWERS) VALUES
+                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
                 tracks,
             )
 
@@ -85,7 +85,7 @@ class Load:
             artists = list(df.to_records(index=False))
 
             cur.executemany(
-                """INSERT INTO TOP_ARTISTS (ARTIST_ID,ARTIST_NAME,ARTIST_POPULARITY,ARTIST_FOLLOWERS,PRIMARY_GENRE) VALUES (%s,%s,%s,%s,%s,%s);""",
+                """INSERT INTO TOP_ARTISTS (ARTIST_ID,ARTIST_NAME,ARTIST_POPULARITY,ARTIST_FOLLOWERS,PRIMARY_GENRE) VALUES (%s,%s,%s,%s,%s);""",
                 artists,
             )
 
@@ -129,7 +129,7 @@ class Load:
                 """INSERT INTO TOP_TRACKS (TRACK_ID,TRACK_NAME,TRACK_DURATION_MIN,TRACK_POPULARITY,PRIMARY_ARTIST,PRIMARY_ARTIST_ID,
                 ALBUM_ID,ALBUM_NAME,ALBUM_RELEASE_YEAR,PRIMARY_GENRE,TRACK_DANCEABILITY,TRACK_ENERGY,TRACK_KEY,TRACK_LOUDNESS,TRACK_MODE,
                 TRACK_SPEECHINESS,TRACK_ACOUSTICNESS,TRACK_INSTRUMENTALNESS,TRACK_LIVENESS,TRACK_VALENCE,TRACK_TEMPO,POPULARITY,FOLLOWERS) VALUES
-                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
+                (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);""",
                 top_tracks,
             )
 
@@ -158,7 +158,7 @@ class Load:
                 _ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);"""
             )
 
-            lf = max(pathlib.Path("./extract/all").glob("*"), key=os.path.getmtime)
+            lf = max(pathlib.Path("./extract/alltracks").glob("*"), key=os.path.getmtime)
             lf = str(lf)
 
             df = pd.read_csv(lf)
@@ -166,7 +166,7 @@ class Load:
             all_tracks = list(df.to_records(index=False))
 
             cur.executemany(
-                """INSERT INTO ALL_TRACKS (ID,ARTISTS,TRACKNAME,ALBUM) VALUES (%s,%s,%s,%s,%s);""",
+                """INSERT INTO ALL_TRACKS (ID,ARTISTS,TRACKNAME,ALBUM) VALUES (%s,%s,%s,%s);""",
                 all_tracks,
             )
 

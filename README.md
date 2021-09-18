@@ -6,5 +6,4 @@
 
 - Utilizes postgresql,dbt,airflow
 
-- dbt run
-- dbt test
+- `dbt run, dbt test, dbt debug`

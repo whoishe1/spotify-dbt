@@ -5,9 +5,9 @@ from datetime import datetime
 def edit_columns():
     date = datetime.now().strftime("%Y-%m-%d")
 
-    rp = pd.read_csv("./data/recentlyplayed.csv")
-    ta = pd.read_csv("./data/top_artists.csv")
-    tt = pd.read_csv("./data/top_tracks.csv")
+    rp = pd.read_csv("./extract/recentlyplayed.csv")
+    ta = pd.read_csv("./extract/top_artists.csv")
+    tt = pd.read_csv("./extract/top_tracks.csv")
 
     rp = rp[
         [
@@ -76,6 +76,6 @@ def edit_columns():
         ]
     ]
 
-    rp.to_csv(f"./data/rp/recentlyplayed_{date}.csv", index=False)
-    tt.to_csv(f"./data/tt/top_tracks_{date}.csv", index=False)
-    ta.to_csv(f"./data/ta/top_artists_{date}.csv", index=False)
+    rp.to_csv(f"./extract/rp/recentlyplayed_{date}.csv", index=False)
+    tt.to_csv(f"./extract/tt/top_tracks_{date}.csv", index=False)
+    ta.to_csv(f"./extract/ta/top_artists_{date}.csv", index=False)

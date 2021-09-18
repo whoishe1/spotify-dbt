@@ -2,11 +2,11 @@ from util.spotify import SpotifyTracks
 from util.alltracks import ReturnPlaylist
 from util.filter import edit_columns
 from util.load import Load
+from util.to_s3 import to_s3
 import os
 from dotenv import dotenv_values
 from datetime import datetime
 import pandas as pd
-
 
 config = dotenv_values(".env")
 
@@ -50,7 +50,7 @@ def get_alltracks():
     all_df = pd.concat(output).reset_index(drop=True)
 
     all_df.to_csv(
-        os.path.join("./extract/all", f"spotify_playlist_{date}.csv"),
+        os.path.join("./extract/alltracks", f"spotify_playlist_{date}.csv"),
         index=False,
         encoding="utf-8",
     )
@@ -70,3 +70,4 @@ if __name__ == "__main__":
     get_alltracks()
     edit_columns()
     load_data()
+    to_s3()
