@@ -23,12 +23,12 @@
   - `python main.py`
 
 - Running dbt
-  - dbt init dbt: Creates the project folder
-  - dbt debug: Checks the connection with the Postgres database
-  - dbt deps: Installs the test dependencies
-  - dbt seed: Loads the CSV files into staging tables in the database in postgres
-  - dbt run: Runs the transformations and loads the data into the database
-  - dbt docs generate: Generates the documentation of the dbt project
-  - dbt docs serve: Serves the documentation on a webserver
+  - `dbt init dbt`: Creates the project folder
+  - `dbt debug`: Checks the connection with the Postgres database
+  - `dbt deps`: Installs the test dependencies
+  - `dbt seed`: Loads the CSV files into staging tables in the database in postgres
+  - `dbt run`: Runs the transformations and loads the data into the database
+  - `dbt docs generate`: Generates the documentation of the dbt project
+  - `dbt docs serve`: Serves the documentation on a webserver
 
 - Once data is ready, use PowerBI to connect to local database and procede to create visualizations
