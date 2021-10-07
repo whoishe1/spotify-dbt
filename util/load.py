@@ -154,7 +154,7 @@ class Load:
             cur = conn.cursor()
             cur.execute("DROP TABLE IF EXISTS ALL_TRACKS;")
             cur.execute(
-                """CREATE TABLE ALL_TRACKS (ID VARCHAR(255), ARTISTS VARCHAR(255), TRACKNAME VARCHAR(255), ALBUM VARCHAR(255),
+                """CREATE TABLE ALL_TRACKS (ID VARCHAR(255) UNIQUE, ARTISTS VARCHAR(255), TRACKNAME VARCHAR(255), ALBUM VARCHAR(255),
                 _ETL_LOADED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);"""
             )
 
@@ -178,3 +178,51 @@ class Load:
         finally:
             conn.close()
             print("inserted all tracks")
+
+    def upsert_all_tracks(self):
+        conn = psycopg2.connect(
+            host=self.hostname,
+            dbname=self.dbname,
+            user=self.username,
+            password=self.password,
+        )
+
+        try:
+            cur = conn.cursor()
+
+            # get new data
+            lf = max(pathlib.Path("./extract/alltracks").glob("*"), key=os.path.getmtime)
+            lf = str(lf)
+
+            df = pd.read_csv(lf)
+
+            new_tracks = list(df.to_records(index=False))
+
+            # create temp table for newdata
+            cur.execute(
+                """CREATE TEMP TABLE ALL_TRACKS_TEMP (ID VARCHAR(255), ARTISTS VARCHAR(255), TRACKNAME VARCHAR(255), ALBUM VARCHAR(255));"""
+            )
+
+            cur.executemany(
+                """INSERT INTO ALL_TRACKS_TEMP (ID, ARTISTS,TRACKNAME,ALBUM) VALUES (%s,%s,%s,%s);""",
+                new_tracks,
+            )
+
+            # Fetch temp table values
+            cur.execute("""select * from ALL_TRACKS_TEMP;""")
+            results_temp = cur.fetchall()
+
+            # upsert statement
+            query = """INSERT INTO ALL_TRACKS (ID,ARTISTS,TRACKNAME,ALBUM) VALUES (%s,%s,%s,%s) ON CONFLICT (ID) DO NOTHING;"""
+
+            # upsert temp table values into target
+            cur.executemany(query, results_temp)
+
+            conn.commit()
+
+        except Exception as e:
+            print(e)
+
+        finally:
+            conn.close()
+            print("upserted new rows")

@@ -60,7 +60,8 @@ def load_data():
     load_obj = Load("localhost", "spotify", "postgres", "postgres")
 
     load_obj.insert_rec_played()
-    load_obj.insert_all_tracks()
+    # load_obj.insert_all_tracks()
+    load_obj.upsert_all_tracks()
     load_obj.insert_top_artists()
     load_obj.insert_top_tracks()
 
